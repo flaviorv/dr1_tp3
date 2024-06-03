@@ -17,15 +17,15 @@ public class AlunoController {
     @Autowired
     private AlunoService alunoService;
 
-    private final HashMap<String, String> mensagem = new HashMap<>();
+    private final Map<String, String> mensagem = new HashMap<>();
 
     @PostMapping
     Object cadastrar(@RequestBody Aluno aluno) {
         try {
             alunoService.cadastrar(aluno);
-            mensagem.put("mensagem", "Aluno cadastrado com sucesso!");
+            mensagem.put("info", "Aluno cadastrado com sucesso!");
         }catch (Exception e) {
-            mensagem.put("erro", e.getMessage());
+            mensagem.put("info", e.getMessage());
         }
         System.out.println(mensagem);
         return mensagem;
@@ -42,7 +42,7 @@ public class AlunoController {
             return alunoService.buscarPorMatricula(matricula);
         }catch (Exception e) {
             System.out.println(e.getMessage());
-            mensagem.put("erro", e.getMessage());
+            mensagem.put("info", e.getMessage());
             return mensagem;
         }
 
@@ -52,9 +52,9 @@ public class AlunoController {
     Object alterar(@RequestBody Aluno aluno, @PathVariable Integer matricula) throws Exception{
         try {
             alunoService.alterar(matricula, aluno);
-            mensagem.put("mensagem", "Alterado com sucesso!");
+            mensagem.put("info", "Alterado com sucesso!");
         }catch (Exception e) {
-            mensagem.put("erro", e.getMessage());
+            mensagem.put("info", e.getMessage());
         }
         System.out.println(mensagem);
         return mensagem;
@@ -64,21 +64,33 @@ public class AlunoController {
     Object excluir(@PathVariable Integer matricula) {
         try {
             alunoService.excluir(matricula);
-            mensagem.put("mensagem", "Excluido com sucesso!");
+            mensagem.put("info", "Excluido com sucesso!");
         }catch (Exception e) {
-            mensagem.put("erro", e.getMessage());
+            mensagem.put("info", e.getMessage());
         }
         System.out.println(mensagem);
         return mensagem;
     }
 
-    @PostMapping("/{matricula}")
-    Object seInscrever(@PathVariable Integer matricula, @RequestParam("curso") Integer cursoId) {
+    @PatchMapping("/{matricula}/inscricao")
+    Object seInscrever(@PathVariable Integer matricula, @RequestParam("curso") Integer cursoId) throws Exception {
         try {
             alunoService.seInscrever(matricula, cursoId);
-            mensagem.put("mensagem", "Inscrição realizada com sucesso!");
+            mensagem.put("info", "Inscrição realizada com sucesso!");
         }catch (Exception e) {
-            mensagem.put("erro", e.getMessage());
+            mensagem.put("info", e.getMessage());
+        }
+        System.out.println(mensagem);
+        return mensagem;
+    }
+
+    @DeleteMapping("/{matricula}/inscricao")
+    Object removerInscricao(@PathVariable Integer matricula, @RequestParam("curso") Integer cursoId) throws Exception {
+        try {
+            alunoService.removerInscricao(matricula, cursoId);
+            mensagem.put("info", "Removido com sucesso.");
+        }catch (Exception e) {
+            mensagem.put("info", e.getMessage());
         }
         System.out.println(mensagem);
         return mensagem;

@@ -1,10 +1,12 @@
 package com.dr1.tp3.model.service;
 
+import com.dr1.tp3.controller.CursoController;
 import com.dr1.tp3.model.domain.Aluno;
 import com.dr1.tp3.model.domain.Curso;
 import com.dr1.tp3.model.repository.AlunoRepository;
 import com.dr1.tp3.model.repository.CursoRespository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +17,12 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
     @Autowired
     private CursoRespository cursoRespository;
+    @Autowired
+    private CursoController cursoController;
+    @Autowired
+    private CursoService cursoService;
+    @Autowired
+    private DataSourceTransactionManagerAutoConfiguration dataSourceTransactionManagerAutoConfiguration;
 
     public void cadastrar(Aluno aluno){
         alunoRepository.save(aluno);
@@ -45,24 +53,26 @@ public class AlunoService {
     }
 
     public void excluir(Integer matricula) throws Exception {
-        Optional<Aluno> aluno = alunoRepository.findById(matricula);
-        if(aluno.isPresent()){
-            alunoRepository.deleteById(matricula);
-        }else{
-            throw new Exception("Aluno não encontrado.");
-        }
+        Aluno aluno = buscarPorMatricula(matricula);
+        alunoRepository.deleteById(aluno.getMatricula());
     }
 
     public void seInscrever(Integer matricula, Integer idCurso) throws Exception {
-        Optional<Aluno> aluno = alunoRepository.findById(matricula);
-        Optional<Curso> curso = cursoRespository.findById(idCurso);
-        if(aluno.isPresent() && curso.isPresent()){
-            aluno.get().seInscrever(curso.get());
-            alunoRepository.save(aluno.get());
-        }else if(aluno.isEmpty()){
-            throw new Exception("Aluno não encontrado.");
-        }else {
-            throw new Exception("Curso não encontrado.");
-        }
+        Aluno aluno = buscarPorMatricula(matricula);
+        Curso curso = cursoService.buscarPorId(idCurso);
+
+        aluno.seInscrever(curso);
+        alunoRepository.save(aluno);
     }
+
+    public void removerInscricao(Integer matricula, Integer idCurso) throws Exception {
+        Aluno aluno = buscarPorMatricula(matricula);
+        Curso curso = cursoService.buscarPorId(idCurso);
+        System.out.println(aluno +""+ curso);
+
+        aluno.removerInscricao(curso);
+        alunoRepository.save(aluno);
+    }
+
+
 }

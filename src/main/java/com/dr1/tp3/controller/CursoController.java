@@ -15,14 +15,15 @@ public class CursoController {
     @Autowired
     private CursoService cursoService;
 
+    private final Map<String, String> mensagem = new HashMap<>();
+
     @PostMapping
     Object cadastrar(@RequestBody Curso curso) {
-        Map<String, String> mensagem = new HashMap<>();
         try {
             cursoService.cadastrar(curso);
-            mensagem.put("mensagem", "Curso cadastrado com sucesso!");
+            mensagem.put("info", "Curso cadastrado com sucesso!");
         }catch (Exception e) {
-            mensagem.put("erro", e.getMessage());
+            mensagem.put("info", e.getMessage());
         }
         System.out.println(mensagem);
         return mensagem;
@@ -38,21 +39,19 @@ public class CursoController {
         try {
             return cursoService.buscarPorId(id);
         }catch (Exception e) {
-            Map<String, String> mensagem = new HashMap<>();
             System.out.println(e.getMessage());
-            mensagem.put("erro", e.getMessage());
+            mensagem.put("info", e.getMessage());
             return mensagem;
         }
     }
 
     @PutMapping("/{id}")
     Object alterar(@RequestBody Curso curso, @PathVariable Integer id) {
-        Map<String, String> mensagem = new HashMap<>();
         try {
             cursoService.alterar(id, curso);
-            mensagem.put("mensagem", "Alterado com sucesso!");
+            mensagem.put("info", "Alterado com sucesso!");
         }catch (Exception e) {
-            mensagem.put("erro", e.getMessage());
+            mensagem.put("info", e.getMessage());
         }
         System.out.println(mensagem);
         return mensagem;
@@ -60,12 +59,11 @@ public class CursoController {
 
     @DeleteMapping("/{id}")
     Object excluir(@PathVariable Integer id) {
-        Map<String, String> mensagem = new HashMap<>();
         try {
             cursoService.excluir(id);
-            mensagem.put("mensagem", "Excluido com sucesso!");
+            mensagem.put("info", "Excluido com sucesso!");
         }catch (Exception e) {
-            mensagem.put("erro", e.getMessage());
+            mensagem.put("info", e.getMessage());
         }
         System.out.println(mensagem);
         return mensagem;

@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Data
@@ -19,9 +21,19 @@ public class Aluno {
     private String nome;
 
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
-    private List<Curso> cursos = new ArrayList<>();
+    private Map<Integer, Curso> cursos = new HashMap<>();
 
-    public void seInscrever(Curso curso){
-        cursos.add(curso);
+    public void seInscrever(Curso curso) throws Exception {
+        if (cursos.containsKey(curso.getId())) {
+            throw new Exception("Erro ao realizar inscrição. Incrição já existe.");
+        }
+       cursos.put(curso.getId(), curso);
+    }
+
+    public void removerInscricao(Curso curso) throws Exception {
+        if (!cursos.containsKey(curso.getId())) {
+            throw new Exception("Não foi possível excluir. Inscrição inexistente.");
+        }
+        cursos.remove(curso.getId());
     }
 }
