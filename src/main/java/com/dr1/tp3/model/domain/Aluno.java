@@ -20,7 +20,7 @@ public class Aluno {
     private int matricula;
     private String nome;
 
-    @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.DETACH)
     private Map<Integer, Curso> cursos = new HashMap<>();
 
     public void seInscrever(Curso curso) throws Exception {

@@ -96,4 +96,18 @@ public class AlunoController {
         return mensagem;
     }
 
+    @GetMapping("/{matricula}/cursos")
+    Object cursosInscritos(@PathVariable Integer matricula) {
+        try {
+            mensagem.put("info", "Listando cursos inscritos do aluno " + matricula);
+            System.out.println(mensagem);
+            return alunoService.cursosInscritos(matricula);
+        }catch (Exception e) {
+            mensagem.put("info", e.getMessage());
+            System.out.println(mensagem);
+            return mensagem;
+        }
+    }
+
+
 }
