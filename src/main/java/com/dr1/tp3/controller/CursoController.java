@@ -4,6 +4,8 @@ import com.dr1.tp3.model.domain.Curso;
 import com.dr1.tp3.model.service.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,6 @@ public class CursoController {
         }catch (Exception e) {
             mensagem.put("info", e.getMessage());
         }
-        System.out.println(mensagem);
         return mensagem;
     }
 
@@ -62,6 +63,18 @@ public class CursoController {
         try {
             cursoService.excluir(id);
             mensagem.put("info", "Excluido com sucesso!");
+        }catch (Exception e) {
+            mensagem.put("info", e.getMessage());
+        }
+        System.out.println(mensagem);
+        return mensagem;
+    }
+
+    @DeleteMapping()
+    Object excluirTodos() {
+        try {
+            cursoService.excluirTodos();
+            mensagem.put("info", "Excluidos com sucesso!");
         }catch (Exception e) {
             mensagem.put("info", e.getMessage());
         }

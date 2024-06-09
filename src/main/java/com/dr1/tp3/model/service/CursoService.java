@@ -20,9 +20,7 @@ public class CursoService {
         cursoRepository.save(curso);
     }
 
-    @CachePut(value="curso")
     public List<Curso> listar(){
-        System.out.println("sem cache");
         return cursoRepository.findAll();
     }
 
@@ -36,17 +34,20 @@ public class CursoService {
         }
     }
 
-    public void alterar(Integer id, Curso cursoAlterado) throws Exception{
+    @CachePut(value="curso", key = "#id")
+    public Curso alterar(Integer id, Curso cursoAlterado) throws Exception{
         Optional<Curso> curso = cursoRepository.findById(id);
         if(curso.isPresent()){
             curso.get().setId(id);
             curso.get().setNome(cursoAlterado.getNome());
             cursoRepository.save(curso.get());
+            return curso.get();
         }else {
             throw new Exception("Curso não encontrado.");
         }
     }
 
+    @CacheEvict(value = "curso", key = "#id")
     public void excluir(Integer id) throws Exception {
         Optional<Curso> curso = cursoRepository.findById(id);
         if(curso.isPresent()){
@@ -54,5 +55,9 @@ public class CursoService {
         }else{
             throw new Exception("Curso não encontrado.");
         }
+    }
+
+    public void excluirTodos() throws Exception {
+        cursoRepository.deleteAll();
     }
 }
